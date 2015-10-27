@@ -1,8 +1,9 @@
 # This file is part of TheBlackHole, which is free software and is licensed
 # under the terms of the GNU GPL v3.0. (see http://www.gnu.org/licenses/ )
 
-from sys import stdin
 from colorama import init, Fore
+import sys
+import subprocess
 init()
 
 def getUntil(str, terminator):
@@ -18,15 +19,15 @@ def getFile( str ):
 	
 	return str[:end]
 	
-def getLine():
-	line = stdin.readline()
+def getLine(stream):
+	line = stream.readline()
 	if len(line) > 79 : #TODO: verify this number
-		return line.rstrip() + getLine()
+		return line.rstrip() + getLine(stream)
 	return line
 
-def input():
+def input(stream):
 	while True:
-		line = getLine()
+		line = getLine(stream)
 		if not line:
 			break
 		yield line
@@ -51,7 +52,7 @@ class Parser:
 	# Do special formatting of known messages
 	def handleLine(self, line):
 		if line.startswith( "LaTeX Warning:" ):
-			self.output( Fore.GREEN + line + Fore.RESET )
+			self.output( Fore.YELLOW + line + Fore.RESET )
 		elif line.startswith( "Underful" ) or line.startswith( "Overfull" ):
 			self.output( Fore.GREEN + line + Fore.RESET )
 		else:
@@ -72,13 +73,25 @@ class Parser:
 		else:
 			self.handleLine( line.strip() )
 	
-	def parse(self):
-		for line in input():
+	def parseStrStream(self, stream):
+		for line in input( stream ):
 			self.handleScope( line );
+	
+	def parseBytesStream(self, stream):
+		for line in input( stream ):
+			self.handleScope( line.decode(sys.stdout.encoding) );
 
 
 def main():
-	Parser().parse()
+	if len(sys.argv) == 1:
+		Parser().parseStrStream( sys.stdin )
+	else:
+		args = sys.argv
+		args.remove(args[0])
+		args.insert( 0, "pdflatex" )
+		args.insert( 1, "-interaction=nonstopmode" )
+		Parser().parseBytesStream( subprocess.Popen( args, stdout=subprocess.PIPE ).stdout )
+		
 	
 if __name__ == "__main__":
 	main()
