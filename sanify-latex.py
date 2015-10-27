@@ -51,7 +51,9 @@ class Parser:
 	
 	# Do special formatting of known messages
 	def handleLine(self, line):
-		if line.startswith( "LaTeX Warning:" ):
+		if line.startswith( "!" ):
+			self.output( Fore.RED + line + Fore.RESET )
+		elif line.startswith( "LaTeX Warning:" ):
 			self.output( Fore.YELLOW + line + Fore.RESET )
 		elif line.startswith( "Underful" ) or line.startswith( "Overfull" ):
 			self.output( Fore.GREEN + line + Fore.RESET )
@@ -90,6 +92,9 @@ def main():
 		args.remove(args[0])
 		args.insert( 0, "pdflatex" )
 		args.insert( 1, "-interaction=nonstopmode" )
+		args.insert( 1, "-halt-on-error" )
+		args.insert( 1, "-synctex=1" )
+	#	args.insert( 1, "-file-line-error" )
 		Parser().parseBytesStream( subprocess.Popen( args, stdout=subprocess.PIPE ).stdout )
 		
 	
