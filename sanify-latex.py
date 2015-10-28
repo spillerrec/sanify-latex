@@ -82,10 +82,6 @@ class Parser:
 			else:
 				self.handleLine( line.strip() )
 	
-	def parseStrStream(self, stream):
-		for line in iter(partial(getLine,stream), ''):
-			self.handleScope( line );
-	
 	def parseBytesStream(self, stream):
 		for line in iter(partial(getLine,stream), b''):
 			self.handleScope( line.decode(sys.stdout.encoding) );
@@ -93,7 +89,7 @@ class Parser:
 
 def main():
 	if len(sys.argv) == 1:
-		Parser().parseStrStream( sys.stdin )
+		Parser().parseBytesStream( sys.stdin.buffer )
 	else:
 		args = ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", "-synctex=1"]
 		args.extend( sys.argv[1:] )
