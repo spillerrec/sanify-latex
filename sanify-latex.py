@@ -2,6 +2,7 @@
 # under the terms of the GNU GPL v3.0. (see http://www.gnu.org/licenses/ )
 
 from colorama import init, Fore
+import re
 import sys
 import subprocess
 init()
@@ -35,6 +36,8 @@ def input(stream):
 class Parser:
 	context = []
 	has_outputed = False
+	bracket_number = re.compile("^\[[0-9]*\]")
+	lost_scope = re.compile("\(\./")
 	
 	def output(self, line):
 		if line:
@@ -44,10 +47,11 @@ class Parser:
 			if not self.has_outputed and not indent==0:
 				#TODO: print context levels which have been skipped as there were no output
 				print( '' )
-				print( Fore.CYAN + '\t'*(indent-1) + self.context[-1] + Fore.RESET )
+				print( Fore.CYAN + '   '*(indent-1) + 
+self.context[-1] + Fore.RESET )
 				self.has_outputed = True
 			
-			print( '\t'*indent + line )
+			print( '   '*indent + line )
 	
 	# Do special formatting of known messages
 	def handleLine(self, line):
@@ -72,8 +76,17 @@ class Parser:
 			self.context.pop()
 			self.has_outputed = False
 			self.handleScope( trimmed[1:] )
+		elif self.bracket_number.search(trimmed):
+			#TODO: find out what this is
+			self.handleScope( trimmed[self.bracket_number.search(trimmed).end():] )
 		else:
-			self.handleLine( line.strip() )
+			found_scope = self.lost_scope.search(trimmed)
+			if found_scope:
+			#	print( Fore.RED + "Warning, unexpected scope in: " + trimmed + Fore.RESET )
+				self.handleLine( trimmed[:found_scope.start()] )
+				self.handleScope( trimmed[found_scope.start():] )
+			else:
+				self.handleLine( line.strip() )
 	
 	def parseStrStream(self, stream):
 		for line in input( stream ):
