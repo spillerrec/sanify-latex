@@ -49,8 +49,7 @@ class Parser:
 			if not self.has_outputed and not indent==0:
 				#TODO: print context levels which have been skipped as there were no output
 				print( '' )
-				print( Fore.CYAN + '   '*(indent-1) + 
-self.context[-1] + Fore.RESET )
+				print( Fore.CYAN + '   '*(indent-1) + self.context[-1] + Fore.RESET )
 				self.has_outputed = True
 			
 			print( '   '*indent + line )
