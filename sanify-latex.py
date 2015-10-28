@@ -6,16 +6,16 @@
 from colorama import init, Fore
 import re
 import sys
+from functools import partial
 import subprocess
 init()
 
-def getUntil(str, terminator):
-	return str[:str.index(terminator)]
-
 def getFile( str ):
+	# Filename ends on '"' if it starts on '"'
 	if str.startswith( '"' ):
-		return '"' + getUntil( str[1:], '"' ) + '"'
+		return str[:str.index( '"', 1 )+1]
 	
+	# Otherwise end at the first whitespace, at the end of scope or end of file
 	end = str.find( ')' )
 	if end == -1:
 		end = str.find( ' ' )
@@ -27,19 +27,12 @@ def getLine(stream):
 	if len(line) > 79 : #TODO: verify this number
 		return line.rstrip() + getLine(stream)
 	return line
-
-def input(stream):
-	while True:
-		line = getLine(stream)
-		if not line:
-			break
-		yield line
 		
 class Parser:
 	context = []
 	has_outputed = False
 	bracket_number = re.compile("^\[[0-9]*\]")
-	lost_scope = re.compile("\(\./")
+	lost_scope = re.compile("\(\./") #TODO: detect windows drive letters as well
 	
 	def output(self, line):
 		if line:
@@ -90,11 +83,11 @@ class Parser:
 				self.handleLine( line.strip() )
 	
 	def parseStrStream(self, stream):
-		for line in input( stream ):
+		for line in iter(partial(getLine,stream), ''):
 			self.handleScope( line );
 	
 	def parseBytesStream(self, stream):
-		for line in input( stream ):
+		for line in iter(partial(getLine,stream), b''):
 			self.handleScope( line.decode(sys.stdout.encoding) );
 
 
