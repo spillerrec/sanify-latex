@@ -95,13 +95,8 @@ def main():
 	if len(sys.argv) == 1:
 		Parser().parseStrStream( sys.stdin )
 	else:
-		args = sys.argv
-		args.remove(args[0])
-		args.insert( 0, "pdflatex" )
-		args.insert( 1, "-interaction=nonstopmode" )
-		args.insert( 1, "-halt-on-error" )
-		args.insert( 1, "-synctex=1" )
-	#	args.insert( 1, "-file-line-error" )
+		args = ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", "-synctex=1"]
+		args.extend( sys.argv[1:] )
 		Parser().parseBytesStream( subprocess.Popen( args, stdout=subprocess.PIPE ).stdout )
 		
 	
