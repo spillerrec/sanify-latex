@@ -67,7 +67,10 @@ class Parser:
 			self.has_outputed = False
 			self.handleScope( trimmed[len(name)+1:] )
 		elif trimmed.startswith( ')' ):
-			self.context.pop()
+			if len(self.context) > 0:
+				self.context.pop()
+			else:
+				print( Fore.RED + "Warning, scopes were not parsed correctly" + Fore.RESET )
 			self.has_outputed = False
 			self.handleScope( trimmed[1:] )
 		elif self.bracket_number.search(trimmed):
