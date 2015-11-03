@@ -17,8 +17,11 @@ def getFile( str ):
 	
 	# Otherwise end at the first whitespace, at the end of scope or end of file
 	end = str.find( ')' )
+	end2 = str.find( ' ' )
 	if end == -1:
-		end = str.find( ' ' )
+		end = end2
+	if end2 != -1 and end2 < end:
+		end = end2
 	
 	return str[:end]
 	
@@ -70,7 +73,7 @@ class Parser:
 			if len(self.context) > 0:
 				self.context.pop()
 			else:
-				print( Fore.RED + "Warning, scopes were not parsed correctly" + Fore.RESET )
+				print( Fore.RED + "Sanify-Warning, scopes were not parsed correctly" + Fore.RESET )
 			self.has_outputed = False
 			self.handleScope( trimmed[1:] )
 		elif self.bracket_number.search(trimmed):
