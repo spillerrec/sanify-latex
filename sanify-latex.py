@@ -51,7 +51,7 @@ class Parser:
 	def handleLine(self, line):
 		if line.startswith( "!" ):
 			self.output( Fore.RED + line + Fore.RESET )
-		elif line.startswith( "LaTeX Warning:" ):
+		elif line.startswith( "LaTeX Warning:" ) or line.startswith( "LaTeX Font Warning:" ):
 			self.output( Fore.YELLOW + line + Fore.RESET )
 		elif line.startswith( "Underful" ) or line.startswith( "Overfull" ):
 			self.output( Fore.GREEN + line + Fore.RESET )
