@@ -157,12 +157,13 @@ class Parser:
 	
 	# Do special formatting of known messages
 	def handleLine(self, line):
-		if line.startswith( "!" ):
+		plain = line.lower()
+		if line.startswith( "!" ) or "error" in line or "unsuccessful" in line or "fatal" in line:
 			self.output( Fore.RED + line + Fore.RESET )
-		elif line.startswith( "LaTeX Warning:" ) or line.startswith( "LaTeX Font Warning:" ):
+		elif "warning" in line or "not available" in line:
 			self.output( Fore.YELLOW + line + Fore.RESET )
 		elif line.startswith( "Underful" ) or line.startswith( "Overfull" ):
-			self.output( Fore.GREEN + line + Fore.RESET )
+			self.output( Fore.YELLOW + line + Fore.RESET )
 		else:
 			self.output( line )
 	
