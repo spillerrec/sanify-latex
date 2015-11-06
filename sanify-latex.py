@@ -158,9 +158,9 @@ class Parser:
 	# Do special formatting of known messages
 	def handleLine(self, line):
 		plain = line.lower()
-		if line.startswith( "!" ) or "error" in line or "unsuccessful" in line or "fatal" in line:
+		if line.startswith( "!" ) or "error" in plain or "unsuccessful" in plain or "fatal" in plain:
 			self.output( Fore.RED + line + Fore.RESET )
-		elif "warning" in line or "not available" in line:
+		elif "warning" in plain or "not available" in plain:
 			self.output( Fore.YELLOW + line + Fore.RESET )
 		elif line.startswith( "Underful" ) or line.startswith( "Overfull" ):
 			self.output( Fore.YELLOW + line + Fore.RESET )
