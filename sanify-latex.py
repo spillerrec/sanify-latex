@@ -111,7 +111,6 @@ class ResourceScope(Scope):
 class Parser:
 	context = []
 	has_outputed = False
-	lost_scope = re.compile("\(\./") #TODO: detect windows drive letters as well
 	
 	def output(self, line):
 		if line:
@@ -184,13 +183,7 @@ class Parser:
 				return
 		
 		#Handle ordinary input
-		found_scope = self.lost_scope.search(trimmed)
-		if found_scope:
-		#	print( Fore.RED + "Warning, unexpected scope in: " + trimmed + Fore.RESET )
-			self.handleLine( trimmed[:found_scope.start()] )
-			self.handleScope( trimmed[found_scope.start():] )
-		else:
-			self.handleLine( line.strip() )
+		self.handleLine( line.strip() )
 	
 	def parseBytesStream(self, stream):
 		for line in iter(partial(getLine,stream), b''):
