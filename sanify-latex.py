@@ -190,14 +190,9 @@ class Parser:
 			self.handleScope( line.decode(sys.stdout.encoding) );
 
 
-def main():
-	if len(sys.argv) == 1:
-		Parser().parseBytesStream( sys.stdin.buffer )
-	else:
-		args = ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", "-synctex=1"]
-		args.extend( sys.argv[1:] )
-		Parser().parseBytesStream( subprocess.Popen( args, stdout=subprocess.PIPE ).stdout )
-		
-	
-if __name__ == "__main__":
-	main()
+if len(sys.argv) == 1:
+	Parser().parseBytesStream( sys.stdin.buffer )
+else:
+	args = ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", "-synctex=1"]
+	args.extend( sys.argv[1:] )
+	Parser().parseBytesStream( subprocess.Popen( args, stdout=subprocess.PIPE ).stdout )
