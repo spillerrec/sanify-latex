@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# This file is part of TheBlackHole, which is free software and is licensed
+# This file is part of sanify-latex, which is free software and is licensed
 # under the terms of the GNU GPL v3.0. (see http://www.gnu.org/licenses/ )
 
 from colorama import init, Fore
